@@ -48,16 +48,18 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		} else {
 			//find the path of the notebook from the <!-- nbstart line to the <!-- nbend line
-			var pattern = '<!-- nbstart'
-			var start = findMe(editor, pattern)
-			pattern = '<!-- nbend'
-			var end = findMe(editor, pattern)
+			var pattern = '<!-- nbstart';
+			var start = findMe(editor, pattern);
+			pattern = '<!-- nbend';
+			var end = findMe(editor, pattern);
+
+
 			if (start > -1 && end > -1 && start < end) {
 				//select all notebook code from start to end line
-				editor.selection = new vscode.Selection(start, 0, end, 14)
+				editor.selection = new vscode.Selection(start, 0, end, 14);
 				var url = getUrl(editor, start);
 				var content = getNotebookmd(url);
-				insertContentToEditor(editor, content, true)
+				insertContentToEditor(editor, content, true);
 			} else {
 				vscode.window.showInformationMessage("There isn't a notebook to update in this document");
 
