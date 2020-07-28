@@ -1,5 +1,7 @@
 # Show Me the Notebook
-Hackathon 2020 - insert the markdown version of a Jupyter notebook into a document
+Hackathon 2020 - Docs authors can now insert the markdown version of a Jupyter notebook into a document
+
+**Work in progress** For now, you will see hardcoded markdown code - the reading and conversion of a real notebook **TBD**
 
 There are two functions:
 
@@ -19,7 +21,7 @@ Use `npm install` to install dependencies.
 
 ### Left to do
 
-Right now everything is in place for this to work, but with a hardcoded result. That is, nothing is read or converted yet.  But all the scaffolding is in place.  Next to do:
+Right now everything is in place for this to work, but with a **hardcoded result**. That is, nothing is read or converted yet.  But all the scaffolding is in place.  Next to do:
 
 * Figure out how to actually open the .json notebook from a github url
 * Figure out how to run nbconvert on the json input to get the markdown.  Or another possibility I suppose is to iterate through the .json directly and create the markdown?  
