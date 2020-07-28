@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { writeFileSync } from 'fs';
+import { unlinkSync, writeFileSync } from 'fs';
 import fetch from "node-fetch";
 import { convertToMarkdown, IResult } from './nbconvert';
 import { resolve } from 'path';
@@ -29,12 +29,17 @@ export async function getNotebookmd(
     const filePath = 'temp.ipynb';
     writeFileSync(filePath, ipynbJson);
     const fullPath = resolve(filePath);
-    const result = await getConvertPromise(fullPath);
-    if (result !== null) {
-        return result.markdown;
-    }
+    try {
+        const result = await getConvertPromise(fullPath);
+        if (result !== null) {
+            return result.markdown;
+        }
 
-    return null;
+        return null;
+    }
+    finally {
+        unlinkSync(fullPath);
+    }
 
 
 
