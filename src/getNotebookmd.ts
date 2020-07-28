@@ -21,7 +21,7 @@ function getConvertPromise(filePath: string) {
     });
 }
 
-export async function getNotebookmd(
+export async function getNotebookAsMarkdown(
     url: string,
     update: boolean
 ) {
