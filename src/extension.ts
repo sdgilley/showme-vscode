@@ -22,17 +22,17 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		} else {
 			const getUserInput = vscode.window.showInputBox({
-				prompt: 'Where is your notebook?',
+				prompt: 'Where is your notebook? (enter URL to raw GitHub file)',
 			});
 			getUserInput.then(val => {
 				if (!val) {
-					vscode.window.showInformationMessage('No notebook was found there.');
+					vscode.window.showInformationMessage("You didn't enter a URL");
 					return;
 				}
 
 				var url = val;
 
-				var content = getNotebookmd(url);
+				var content = getNotebookmd(url, false);
 				insertContentToEditor(editor, content, true);
 			});
 
@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 				//select all notebook code from start to end line
 				editor.selection = new vscode.Selection(start, 0, end, 14);
 				var url = getUrl(editor, start);
-				var content = getNotebookmd(url);
+				var content = getNotebookmd(url, true);
 				insertContentToEditor(editor, content, true);
 			} else {
 				vscode.window.showInformationMessage("There isn't a notebook to update in this document");
