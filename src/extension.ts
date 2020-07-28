@@ -6,7 +6,10 @@ import { insertContentToEditor, findMe, getUrl } from './common';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+
+    // TODO: check for pandoc being installed on local machine
+    // if not installed, prompt user to install
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -16,26 +19,25 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	let insertNotebook = vscode.commands.registerCommand('showme.insertNotebook', () => {
+	let insertNotebook = vscode.commands.registerCommand('showme.insertNotebook', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
 			return;
 		} else {
-			const getUserInput = vscode.window.showInputBox({
+			const value = await vscode.window.showInputBox({
 				prompt: 'Where is your notebook? (enter URL to raw GitHub file)',
 			});
-			getUserInput.then(val => {
-				if (!val) {
-					vscode.window.showInformationMessage("You didn't enter a URL");
-					return;
-				}
+			
+            if (!value) {
+                vscode.window.showInformationMessage("You didn't enter a URL");
+                return;
+            }
 
-				var url = val;
-
-				var content = getNotebookmd(url, false);
-				insertContentToEditor(editor, content, true);
-			});
-
+            var url = value;
+            var content = await getNotebookmd(url, false);
+            if (content !== null) {
+                insertContentToEditor(editor, content, true);
+            }
 		}
 	});
 	context.subscriptions.push(insertNotebook);
