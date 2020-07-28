@@ -1,5 +1,5 @@
-import { spawn, exec, ExecException } from 'child_process';
-import { resolve } from 'path';
+import { spawn, execSync, ExecException } from 'child_process';
+import { resolve, join } from 'path';
 
 export interface IResult {
     markdown: string;
@@ -18,7 +18,11 @@ export function convertToMarkdown(
     ];
 
     let result: IResult | null = null;
-    const path = resolve('C:\\Users\\dapine\\AppData\\Local\\Programs\\Python\\Python38-32\\Scripts\\jupyter');
+    const stdout = execSync('which python').toString();
+    const pythonPath = stdout.substr(0, stdout.length - 1);
+    const jupyterPath = join(pythonPath, 'scripts/jupiter');
+
+    const path = resolve(jupyterPath);
     let nbConvert = spawn(path, args, { windowsVerbatimArguments: true });
     nbConvert.stdout.on('data', data => {
         result = { markdown: data + '' };
