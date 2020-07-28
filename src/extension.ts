@@ -43,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(insertNotebook);
 
 	// Update the notebook - looks for nbstart and nbend.  If they are there, replace it with latest content
-	let updateNotebook = vscode.commands.registerCommand('showme.updateNotebook', () => {
+	let updateNotebook = vscode.commands.registerCommand('showme.updateNotebook', async () => {
 
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) {
@@ -60,8 +60,10 @@ export async function activate(context: vscode.ExtensionContext) {
 				//select all notebook code from start to end line
 				editor.selection = new vscode.Selection(start, 0, end, 14);
 				var url = getUrl(editor, start);
-				var content = getNotebookmd(url, true);
-				insertContentToEditor(editor, content, true);
+				var content = await getNotebookmd(url, false);
+				if (content !== null) {
+					insertContentToEditor(editor, content, true);
+				}
 			} else {
 				vscode.window.showInformationMessage("There isn't a notebook to update in this document");
 

@@ -18,7 +18,7 @@ export function convertToMarkdown(
     ];
 
     let result: IResult | null = null;
-    const path = resolve('C:\\Users\\dapine\\AppData\\Local\\Programs\\Python\\Python38-32\\Scripts\\jupyter');
+    const path = resolve('C:\\Users\\sgilley\\AppData\\Local\\Programs\\Python\\Python37\\Scripts\\jupyter');
     let nbConvert = spawn(path, args, { windowsVerbatimArguments: true });
     nbConvert.stdout.on('data', data => {
         result = { markdown: data + '' };
