@@ -25,7 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
             return;
         } else {
             const value = await vscode.window.showInputBox({
-                prompt: 'Where is your notebook? (enter URL to raw GitHub file)',
+                prompt: 'Where is your notebook? (paste in the GitHub URL)',
             });
 
             if (!value) {
