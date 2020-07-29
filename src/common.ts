@@ -41,7 +41,7 @@ export function findMe(
 	var found = -1;
 
     for (var line = 0; line < article.lineCount; line++) {
-        var text = article.lineAt(line).text
+        var text = article.lineAt(line).text;
         let match = text.match(pattern);
         if (match !== null && match.index !== undefined) {
             found = line;
