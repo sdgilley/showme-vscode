@@ -25,6 +25,7 @@ export async function getNotebookAsMarkdown(
     url: string,
     update: boolean
 ) {
+    url = toRaw(url);
     const ipynbJson = await getRawNotebookJson(url);
     const filePath = 'temp.ipynb';
     writeFileSync(filePath, ipynbJson);
@@ -42,29 +43,76 @@ export async function getNotebookAsMarkdown(
     }
 
 
-async function getRawNotebookJson(url: string): Promise<string> {
-    const response = await fetch(url);
-    const data = await response.json();
+    async function getRawNotebookJson(url: string): Promise<string> {
+        const response = await fetch(url);
+        const data = await response.json();
 
-    return JSON.stringify(data);
+        return JSON.stringify(data);
+    }
+
+    // add start/end and a note before the notebook content
+    function createFinalContent(content: string, url: string) {
+
+        // advance all the headings by one to make them fit better in the article... don't want two h1s!
+        content = content.replace(/(^|\r|\n|\r\n)#/g, "\n##");
+
+        let path = toUrl(url);
+        var res = url.split("/");
+        var fname = res[res.length - 1];
+        var firstline = '> [!TIP] \n> Contents of _' + fname + '_. **[Open in GitHub](' + path + ')**.';
+
+        // add start and end tags so we can recognize this as a notebook when we want to update
+        content = "\n<!-- nbstart " + url + " -->\n" + firstline + "\n\n" + content + "\n<!-- nbend -->";
+        return content;
+
+    }
 }
 
-// add start/end and a note before the notebook content
-function createFinalContent (content: string, url: string) {
-
-    // advance all the headings by one to make them fit better in the article... don't want two h1s!
-    // content = content.replace(/(^|\r|\n|\r\n)#/g, "\n##");
-
-    // form a heading for the notebook with a link
-    
+function toRaw(url: string) {
+    // use this to make sure your url is to the raw file
+    let raw = '';
     var res = url.split("/");
-    var fname = res[res.length - 1];
-    var path = url.replace("raw.githubusercontent.com", "github.com");
-    path = path.replace("/master", "/blob/master");
-    var firstline = '> [!TIP] \n> Contents of _' + fname + '_. **[Open in GitHub]('  + path + ')**.';
 
-    // add start and end tags so we can recognize this as a notebook when we want to update
-    content = "<!-- nbstart " + url + " -->\n" + firstline + "\n" + content + "\n<!-- nbend -->";
-    return content;
+    // change the path from raw.githubusercontent.com to github.com
+    if (res[2] === "github.com") {
+        res[2] = "raw.githubusercontent.com";
 
-}}
+        // re-form the string 
+        for (let i = 0; i < res.length - 1; i++) {
+            raw = raw + res[i] + '/';
+        }
+
+        // add filename without the / at the end
+        raw = raw + res[res.length - 1];
+        raw = raw.replace("/blob", "");
+    } else {
+        // return original value, it already is a raw url
+        raw = url;
+    }
+    return raw;
+}
+
+
+function toUrl(raw: string) {
+    // use this to make sure your url is to the original (non-raw) file
+    var res = raw.split("/");
+    let url = '';
+
+    // change the path from github.com to raw.githubusercontent.com 
+    if (res[2] === "raw.githubusercontent.com") {
+        res[2] = "github.com";
+        // add blob after the branch
+        res[5] = "/blob/" + res[5];
+        // re-form the string 
+        for (let i = 0; i < res.length - 1; i++) {
+            url = url + res[i] + '/';
+        }
+        // add filename without the / at the end
+
+        url = url + res[res.length - 1];
+    } else {
+        // return original value, it wasn't the raw url after all
+        url = raw;
+    }
+    return url;
+}
