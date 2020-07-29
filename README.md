@@ -10,7 +10,7 @@ There are two commands added to the command palette:
 
 * **Update the notebook** - If there is a notebook in the document (determined by searching for the start and end tags), this function will read the URL in the start tag, re-read the notebook and replace the contents between start and end with the latest version.  If you insert multiple notebooks in the same document (why would you do that?) only the first one will be updated.
 
-:::image type="content" source="images/showmeInsert.gif" alt-text="Show me the notebook":::
+![Show me the notebook](images/showmeInsert.gif)
 
 ## Instructions
 
