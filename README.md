@@ -14,8 +14,17 @@ There are two commands added to the command palette:
 
 ## Instructions
 
-Use `npm install` to install dependencies.
+* Install Python on your computer.  To verify that it is installed, in a terminal window run:
+    * Windows: `where python`
+    * Linux/Mac: `which python`
 
+* Install `nbconvert`:
+
+    ```bash
+    pip install nbconvert
+    ```
+
+* Use `npm install` to install dependencies.
 * Open in VS Code
 * **F5** to run
 * Use Ctrl-Shift-P in new window

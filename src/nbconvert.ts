@@ -20,12 +20,12 @@ export function convertToMarkdown(
 
     let result: IResult | null = null;
     const plat = os.platform();
-    const stdout = execSync(`${(plat === 'win32' ? 'where' : 'which')} python`).toString();
+    const stdout = execSync(`${(plat === 'win32' ? 'where' : 'which')} jupyter`).toString();
 
     let pythonPath = stdout.split('\r\n')[0].substr(0, stdout.length - 1);
-    pythonPath = pythonPath.replace('python.exe', '');
+    pythonPath = pythonPath.replace('jupyter.exe', '');
 
-    const jupyterPath = join(pythonPath, 'Scripts/jupyter');
+    const jupyterPath = join(pythonPath, 'jupyter');
 
     const path = resolve(jupyterPath);
     let nbConvert = spawn(path, args, { windowsVerbatimArguments: true });

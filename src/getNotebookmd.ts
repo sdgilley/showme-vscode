@@ -54,7 +54,7 @@ export async function getNotebookAsMarkdown(
     function createFinalContent(content: string, url: string) {
 
         // advance all the headings by one to make them fit better in the article... don't want two h1s!
-        content = content.replace(/(^|\r|\n|\r\n)#/g, "\n##");
+        //content = content.replace(/(^|\r|\n|\r\n)#/g, "\n##");
 
         let path = toUrl(url);
         var res = url.split("/");
