@@ -20,15 +20,10 @@ export function convertToMarkdown(
 
     let result: IResult | null = null;
     const plat = os.platform();
-    const stdout = execSync(`${(plat === 'win32' ? 'where' : 'which')} jupyter`).toString();
-
-    let pythonPath = stdout.split('\r\n')[0].substr(0, stdout.length - 1);
-    pythonPath = pythonPath.replace('jupyter.exe', '');
-
-    const jupyterPath = join(pythonPath, 'jupyter');
-
+    const stdout = execSync(`${plat === 'win32' ? 'where' : 'which'} jupyter`).toString();
+    const jupyterPath = stdout.split('\r\n')[0].substr(0, stdout.length - 1);
     const path = resolve(jupyterPath);
-    let nbConvert = spawn(path, args, { windowsVerbatimArguments: true });
+    const nbConvert = spawn(path, args, { windowsVerbatimArguments: true });
     nbConvert.stdout.on('data', data => {
         result = { markdown: data + '' };
     });
