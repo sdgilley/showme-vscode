@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { unlinkSync, writeFileSync } from 'fs';
+//import { unlinkSync, writeFileSync } from 'fs';
 import fetch from "node-fetch";
 import { convertToMarkdown, IResult } from './nbconvert';
-import { resolve, join } from 'path';
-import { tmpdir } from 'os';
+//import { resolve } from 'path';
 
-function getConvertPromise(filePath: string) {
+function getConvertPromise(ipynbJson: string) {
     return new Promise<IResult>((resolve, reject) => {
         convertToMarkdown(
-            filePath,
+            ipynbJson,
             (result, error) => {
                 if (error || result === null) {
                     reject(error);
@@ -28,19 +27,15 @@ export async function getNotebookAsMarkdown(
 ) {
     url = toRaw(url);
     const ipynbJson = await getRawNotebookJson(url);
-    const filePath = join(tmpdir(),'temp.ipynb');
-    writeFileSync(filePath, ipynbJson);
-    const fullPath = resolve(filePath);
+
     try {
-        const result = await getConvertPromise(fullPath);
+        const result = await getConvertPromise(ipynbJson);
         if (result !== null) {
             return createFinalContent(result.markdown, url);
         }
-
         return null;
     }
     finally {
-        unlinkSync(fullPath);
     }
 
 
