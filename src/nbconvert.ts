@@ -10,26 +10,21 @@ export function convertToMarkdown(
     ipynbJson: string,
     callback: (result: IResult | null, errorOrNull: Error | null) => void) {
 
-    const args: string[] = [
-        'nbconvert',
-        '--to',
-        'markdown',
-        '--stdin',
-        '--stdout'
-    ];
-
     let result: IResult | null = null;
     const plat = os.platform();
     const stdout = execSync(`${plat === 'win32' ? 'where' : 'which'} jupyter`).toString();
     const jupyterPath = stdout.split('\r\n')[0].substr(0, stdout.length - 1);
     const path = resolve(jupyterPath);
-    const nbConvert = spawn(path, args, { windowsVerbatimArguments: true });
 
-    nbConvert.stdin.write(`${ipynbJson}`); 
+	const args: string[] = ['nbconvert', '--to', 'markdown', '--stdin', '--stdout'];
+
+	const nbConvert = spawn(path, args, { windowsVerbatimArguments: true });
+	ipynbJson.split('\n').forEach(line => nbConvert.stdin.write(line));
+	nbConvert.stdin.end();
     nbConvert.stdout.on('data', data => {
         result = { markdown: data + '' };
     });
-    nbConvert.stdin.end();
+
 
     nbConvert.on('error', err => {
         callback(null, err);
